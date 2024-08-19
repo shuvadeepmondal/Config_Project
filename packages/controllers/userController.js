@@ -64,4 +64,29 @@ const registerUser = async (req, res) => {
     }
 };
 
-module.exports = { registerUser };
+const uploadDocuments = async (req, res) => {
+    try {
+        const { uniqueId } = req.body;
+        const user = await User.findOne({ uniqueId });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        if (req.files['aadhaar']) {
+            user.aadhaarUrl = req.files['aadhaar'][0].path;
+        }
+
+        if (req.files['dob']) {
+            user.dobUrl = req.files['dob'][0].path;
+        }
+
+        await user.save();
+        res.status(200).json({ message: 'Documents uploaded successfully' });
+    } catch (error) {
+        console.error('Error uploading documents:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+module.exports = { registerUser, uploadDocuments };

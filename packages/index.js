@@ -1,9 +1,10 @@
-// server.js
+// index.js
 
 const express = require('express');
 const dotenv = require('dotenv');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const userRoutes = require('./routes/userRoutes');
 
 // Load environment variables
 dotenv.config();
@@ -20,7 +21,10 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
   .catch(err => console.log(err));
 
-// Routes (we'll add routes later)
+// Routes
+app.use('/api', userRoutes);
+
+// Default Route
 app.get('/', (req, res) => {
   res.send('API is running...');
 });
